@@ -1,6 +1,6 @@
 # Picaswap
 
-**PicaSwap** is a Decentralized Exchange and implementation of Automated Market Maker designed on Casper Network.
+Decentralized Exchange and implementation of Automated Market Maker designed on Casper Network.
 
 DeFi solution to give access to exchanges, liquidity pools and yield farming.
 
