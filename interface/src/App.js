@@ -13,7 +13,7 @@ import {
 
 import { Menu, MenuItem, Link, Button, Colors } from 'react-foundation';
 
-import { CasperClient, CLPublicKey, DeployUtil, Signer } from "casper-js-sdk";
+import { Wcspr } from './Wcspr.js'
 
 
 function CustomNavLink({ label, to }) {
@@ -83,34 +83,6 @@ function Stake() {
   return (
     <div className="text-center">
       <h2>Stake</h2>
-    </div>
-  )
-
-}
-
-function Wcspr() {
-
-  const [mode, setMode] = useState("wrap")
-  const [amount, setAmount] = useState("wrap")
-
-  async function swap(){
-    const pk = await Signer.getActivePublicKey().catch(
-      (err) => alert("Please install Signer, make sure the site is connected, there is an active key, and signer is not locked")
-    );
-    console.log(pk)
-
-  }
-
-  return (
-    <div className="text-center">
-      <div>
-            <Link isHollow={mode !== 'wrap'} onClick={()=>setMode("wrap")}>Wrap CSPR</Link>
-            <Link isHollow={mode !== 'unwrap'} onClick={()=>setMode("unwrap")}>UnWrap CSPR</Link>
-
-            <input placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
-
-            <Button onClick={swap} color={Colors.WARNING}>{mode}</Button>
-      </div>
     </div>
   )
 
