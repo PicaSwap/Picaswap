@@ -22,39 +22,19 @@ import {
   RuntimeArgs,
 } from "casper-js-sdk";
 
-/*
-const contractDictionaryGetter = async (nodeAddress, dictionaryItemKey, seedUref) => {
-  const stateRootHash = await getStateRootHash(nodeAddress);
+import { utils, helpers} from "casper-js-client-helper";
 
-  const client = new CasperServiceByJsonRPC(nodeAddress);
+const NODE_ADDRESS = "http://54.183.43.215:7777"
 
-  const storedValue = await client.getDictionaryItemByURef(
-    stateRootHash,
-    dictionaryItemKey,
-    seedUref
-  );
-
-  if (storedValue && storedValue.CLValue instanceof CLValue) {
-    return storedValue.CLValue!.value();
-  } else {
-    throw Error("Invalid stored value");
-  }
-};
-
-*/
-async function getBalanceOf(account) {
-  return 0
-  /*
-  const key = new CLKey(new CLAccountHash(account.toAccountHash()));
-  const keyBytes = CLValueParsers.toBytes(key).unwrap();
-  const itemKey = Buffer.from(keyBytes).toString("base64");
+async function getBalanceOf(publicKey) {
+  console.log('getBalanceOf')
+  console.log(helpers)
   const result = await utils.contractDictionaryGetter(
-    this.nodeAddress,
-    itemKey,
-    this.namedKeys!.balances
+    NODE_ADDRESS,
+    publicKey,
+    "balances"
   );
   return result.toString();
-*/
 }
 
 async function getActivePublicKey() {
@@ -64,6 +44,7 @@ async function getActivePublicKey() {
       Signer.sendConnectionRequest()
     }
   );
+  return pk
 }
 
 export function Wcspr() {
@@ -80,11 +61,14 @@ export function Wcspr() {
     async function getBalance() {
       setBalance(undefined)
       const pk = await getActivePublicKey()
+      console.log('pk', pk)
       if (pk) {
-        await getBalanceOf(pk)
+        const balance = await getBalanceOf(pk)
+        console.log(balance)
+        setBalance(balance)
       }
-
     }
+    getBalance()
     
   }, [mode])
 
@@ -94,7 +78,7 @@ export function Wcspr() {
             <Link isHollow={mode !== 'wrap'} onClick={()=>setMode("wrap")}>Wrap CSPR</Link>
             <Link isHollow={mode !== 'unwrap'} onClick={()=>setMode("unwrap")}>UnWrap CSPR</Link>
 
-            <div>Balance: {balance ? balance : 'N/A'}</div>
+            <div>Balance: {balance !== undefined ? balance : 'N/A'}</div>
             <input placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
 
             <Button onClick={swap} color={Colors.WARNING}>{mode}</Button>

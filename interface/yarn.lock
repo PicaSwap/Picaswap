@@ -3402,6 +3402,13 @@ caseless@~0.12.0:
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"
   integrity sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
 
+casper-js-client-helper@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/casper-js-client-helper/-/casper-js-client-helper-0.0.2.tgz#763f672f90b7655f102780f5ed4f569ef9270502"
+  integrity sha512-RDyuquE0XZNw5AHXMnqJpM329rWjiHx4WNh6wzSQdr8pLqYWprzWNYfuEqY17n0sChKtKQMHAate35iow23ZoA==
+  dependencies:
+    casper-js-sdk "^2.6.0"
+
 casper-js-sdk@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/casper-js-sdk/-/casper-js-sdk-2.6.0.tgz#1d08ed82287684355b223a0085c09c78b4571dbf"
