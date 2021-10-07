@@ -41,7 +41,10 @@ const contractDictionaryGetter = async (nodeAddress, dictionaryItemKey, seedUref
   }
 };
 
-async balanceOf(account) {
+*/
+async function getBalanceOf(account) {
+  return 0
+  /*
   const key = new CLKey(new CLAccountHash(account.toAccountHash()));
   const keyBytes = CLValueParsers.toBytes(key).unwrap();
   const itemKey = Buffer.from(keyBytes).toString("base64");
@@ -51,8 +54,8 @@ async balanceOf(account) {
     this.namedKeys!.balances
   );
   return result.toString();
-}
 */
+}
 
 async function getActivePublicKey() {
   let pk = await Signer.getActivePublicKey().catch(
@@ -78,7 +81,7 @@ export function Wcspr() {
       setBalance(undefined)
       const pk = await getActivePublicKey()
       if (pk) {
-        getBalance()
+        await getBalanceOf(pk)
       }
 
     }
