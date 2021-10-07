@@ -2,7 +2,7 @@ import './App.css';
 import 'foundation-sites/dist/css/foundation.min.css';
 
 
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Switch,
@@ -12,6 +12,9 @@ import {
 } from "react-router-dom";
 
 import { Menu, MenuItem, Link, Button, Colors } from 'react-foundation';
+
+import { CasperClient, CLPublicKey, DeployUtil, Signer } from "casper-js-sdk";
+
 
 function CustomNavLink({ label, to }) {
     let match = useRouteMatch({
@@ -90,6 +93,14 @@ function Wcspr() {
   const [mode, setMode] = useState("wrap")
   const [amount, setAmount] = useState("wrap")
 
+  async function swap(){
+    const pk = await Signer.getActivePublicKey().catch(
+      (err) => alert("Please install Signer, make sure the site is connected, there is an active key, and signer is not locked")
+    );
+    console.log(pk)
+
+  }
+
   return (
     <div className="text-center">
       <div>
@@ -98,7 +109,7 @@ function Wcspr() {
 
             <input placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
 
-            <Button color={Colors.WARNING}>{mode}</Button>
+            <Button onClick={swap} color={Colors.WARNING}>{mode}</Button>
       </div>
     </div>
   )
