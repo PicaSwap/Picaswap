@@ -82,7 +82,7 @@ export function Wcspr() {
             </li>
             </ul>
 
-            <div className="mt-10">
+            <div className="mt-16">
               <div>Balance: {balance !== undefined ? balance : 'N/A'}</div>
               <input className="p-1" placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
 
