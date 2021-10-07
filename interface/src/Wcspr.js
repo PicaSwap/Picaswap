@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 
-import { Menu, MenuItem, Link, Button, Colors } from 'react-foundation';
-
 import {
   Signer,
   CasperClient,
@@ -40,8 +38,8 @@ async function getBalanceOf(publicKey) {
 async function getActivePublicKey() {
   let pk = await Signer.getActivePublicKey().catch(
     (err) => {
-      alert("Please install Signer, make sure the site is connected, there is an active key, and signer is unlocked")
-      Signer.sendConnectionRequest()
+      //alert("Please install Signer, make sure the site is connected, there is an active key, and signer is unlocked")
+      //Signer.sendConnectionRequest()
     }
   );
   return pk
@@ -75,13 +73,13 @@ export function Wcspr() {
   return (
     <div className="text-center">
       <div>
-            <Link isHollow={mode !== 'wrap'} onClick={()=>setMode("wrap")}>Wrap CSPR</Link>
-            <Link isHollow={mode !== 'unwrap'} onClick={()=>setMode("unwrap")}>UnWrap CSPR</Link>
+            <button isHollow={mode !== 'wrap'} onClick={()=>setMode("wrap")}>Wrap CSPR</button>
+            <button isHollow={mode !== 'unwrap'} onClick={()=>setMode("unwrap")}>UnWrap CSPR</button>
 
             <div>Balance: {balance !== undefined ? balance : 'N/A'}</div>
             <input placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
 
-            <Button onClick={swap} color={Colors.WARNING}>{mode}</Button>
+            <button onClick={swap}>{mode}</button>
       </div>
     </div>
   )
