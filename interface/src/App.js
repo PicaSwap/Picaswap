@@ -26,8 +26,8 @@ function CustomNavLink({ label, to }) {
       exact: true
     });
 
-  const activeClass = "mx-2 text-sm inline-block border border-gray-300 rounded py-1 px-3 bg-green-500 text-white"
-  const normalClass = "mx-2 text-sm inline-block border border-gray rounded hover:border-gray-200 text-green-500 hover:bg-gray-200 py-1 px-3"
+  const activeClass = "mx-2 text-sm inline-block border border-gray-300 rounded py-1 px-3 bg-blue-500 text-white"
+  const normalClass = "mx-2 text-sm inline-block border border-gray rounded hover:border-gray-200 text-blue-500 hover:bg-gray-200 py-1 px-3"
 
   return (
     <LinkRouter to={to}>

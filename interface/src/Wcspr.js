@@ -73,13 +73,21 @@ export function Wcspr() {
   return (
     <div className="text-center">
       <div>
-            <button isHollow={mode !== 'wrap'} onClick={()=>setMode("wrap")}>Wrap CSPR</button>
-            <button isHollow={mode !== 'unwrap'} onClick={()=>setMode("unwrap")}>UnWrap CSPR</button>
+            <ul className="">
+            <li className="inline-block">
+            <button className={`mx-2 text-sm border  px-2 py-1 ${mode === 'wrap' && "bg-blue-100"}`} onClick={()=>setMode("wrap")}>Wrap CSPR</button>
+            </li>
+            <li className="inline-block">
+            <button className={`mx-2 text-sm border  px-2 py-1 ${mode === 'unwrap' && "bg-blue-100"}`} onClick={()=>setMode("unwrap")}>UnWrap CSPR</button>
+            </li>
+            </ul>
 
-            <div>Balance: {balance !== undefined ? balance : 'N/A'}</div>
-            <input placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
+            <div className="mt-10">
+              <div>Balance: {balance !== undefined ? balance : 'N/A'}</div>
+              <input className="p-1" placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
 
-            <button onClick={swap}>{mode}</button>
+              <button className="ml-2 py-1 px-5 border bg-green-500 text-white capitalize" onClick={swap}>{mode}</button>
+            </div>
       </div>
     </div>
   )
