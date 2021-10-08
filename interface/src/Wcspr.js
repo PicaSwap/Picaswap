@@ -95,7 +95,17 @@ export function Wcspr({ pk }) {
       const contractHash = "hash-80bdcf7eb09c2437783291289b08f7c94adfdc833a9c9b56532fb955c3c71aec"
       await erc20.setContractHash(contractHash.slice(5));
       const clPK = CLPublicKey.fromHex(pk);
-      await erc20.withdraw(clPK, amount, 10**9)
+      await erc20.withdraw(clPK, amount*10**9, 10**9)
+    }
+
+    if (mode === 'wrap') {
+      const erc20 = new WCSPRClient(
+        NODE_ADDRESS,
+        CHAIN_NAME,
+        undefined
+      );
+      const clPK = CLPublicKey.fromHex(pk);
+      erc20.deposit(clPK, amount*10**9, 10**9)
     }
   }
 

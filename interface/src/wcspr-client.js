@@ -13,7 +13,7 @@ const {
 
 const { DEFAULT_TTL } = constants;
 
-const PRE_DEPOSIT_WASM_PATH = 'xxx'
+const PRE_DEPOSIT_WASM_PATH = './pre_deposit.wasm'
 
 export class WCSPRClient extends ERC20Client {
 
@@ -32,8 +32,10 @@ export class WCSPRClient extends ERC20Client {
     });
   }
 
-  async installPreDepositContract(publicKey, paymentAmount) {
-    const runtimeArgs = RuntimeArgs.fromMap({cspr_amount: CLValueBuilder.string("cspr_amount")});
+  async deposit(publicKey, depositAmount, paymentAmount) {
+    const runtimeArgs = RuntimeArgs.fromMap({
+      cspr_amount: CLValueBuilder.u256(depositAmount),
+    });
 
     const deployHash = await installWasmFile({
       chainName: this.chainName,
@@ -44,27 +46,6 @@ export class WCSPRClient extends ERC20Client {
       runtimeArgs,
     });
     return deployHash;
-  }
-
-  // this one has to be callsed with address of pre-deposit contract
-  async deposit(
-    publicKey,
-    depositAmount,
-    paymentAmount,
-    ttl = DEFAULT_TTL
-  ) {
-    const runtimeArgs = RuntimeArgs.fromMap({
-      cspr_amount: CLValueBuilder.u256(depositAmount),
-    });
-
-    return await this.contractCall({
-      entryPoint: "deposit",
-      publicKey,
-      paymentAmount,
-      runtimeArgs,
-      cb: deployHash => this.addPendingDeploy("deposit", deployHash),
-      ttl,
-    });
   }
 
   async contractCall({
@@ -100,7 +81,6 @@ export class WCSPRClient extends ERC20Client {
 
 export const signDeploy = async (deploy, publicKey) => {
   const deployJSON = DeployUtil.deployToJson(deploy)
-  debugger;
   const publicKeyHex = publicKey.toHex();
   const signedDeployJSON = await Signer.sign(deployJSON, publicKeyHex, publicKeyHex);
   const signedDeploy = DeployUtil.deployFromJson(signedDeployJSON).unwrap();
@@ -117,6 +97,14 @@ export const installWasmFile = async ({
 }) => {
   const client = new CasperClient(nodeAddress);
 
+
+  const file = await fetch(pathToContract)
+  console.log(file)
+  const bytes = await file.arrayBuffer()
+  console.log(bytes)
+  const contractContent = new Uint8Array(bytes)
+  console.log(contractContent)
+
   // Set contract installation deploy (unsigned).
   let deploy = DeployUtil.makeDeploy(
     new DeployUtil.DeployParams(
@@ -124,7 +112,7 @@ export const installWasmFile = async ({
       chainName
     ),
     DeployUtil.ExecutableDeployItem.newModuleBytes(
-      utils.getBinary(pathToContract),
+      contractContent,
       runtimeArgs
     ),
     DeployUtil.standardPayment(paymentAmount)
