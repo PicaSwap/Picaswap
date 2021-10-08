@@ -1,6 +1,6 @@
 import { ERC20Client } from "casper-erc20-js-client";
 import { constants, helpers } from "casper-js-client-helper";
-import { RuntimeArgs } from "casper-js-sdk";
+import { RuntimeArgs, CLValueBuilder } from "casper-js-sdk";
 
 const {
   fromCLMap,
@@ -18,12 +18,7 @@ const PRE_DEPOSIT_WASM_PATH = 'xxx'
 
 export class WCSPRClient extends ERC20Client {
 
-  async function withdraw(
-    keys,
-    withdrawAmount,
-    paymentAmount
-    ttl = DEFAULT_TTL
-  ) {
+  async withdraw(keys, withdrawAmount, paymentAmount, ttl = DEFAULT_TTL) {
     const runtimeArgs = RuntimeArgs.fromMap({
       cspr_amount: CLValueBuilder.u256(withdrawAmount),
     });
@@ -38,7 +33,7 @@ export class WCSPRClient extends ERC20Client {
     });
   }
 
-  async function installPreDepositContract(keys, paymentAmount) {
+  async installPreDepositContract(keys, paymentAmount) {
     const runtimeArgs = RuntimeArgs.fromMap({});
 
     return await installContract(
@@ -52,14 +47,14 @@ export class WCSPRClient extends ERC20Client {
   }
 
   // this one has to be callsed with address of pre-deposit contract
-  async function deposit(
+  async deposit(
     keys,
     depositAmount,
-    paymentAmount
+    paymentAmount,
     ttl = DEFAULT_TTL
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({
-      cspr_amount: CLValueBuilder.u256(withdrawAmount),
+      cspr_amount: CLValueBuilder.u256(depositAmount),
     });
 
     return await this.contractCall({
