@@ -33,9 +33,8 @@ export const handler: Handler = async (event, context) => {
     });
 
     const responseJson = await response.json()
-  catch(err) {
+  } catch(err) {
     return {status: 200, body: JSON.stringify({"error": JSON.stringify(err)}, reponseHeaders)}
-  
   }
 
   // TODO: consider adding headers
