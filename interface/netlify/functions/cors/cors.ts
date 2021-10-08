@@ -39,7 +39,7 @@ export const handler: Handler = async (event, context) => {
   const lambdaResponse = {
     statusCode: response.status,
     headers: responseHeaders,
-    body: await response.text(),
+    body: JSON.stringify(await response.json()), // assume always json
   }
   console.log('response', lambdaResponse)
   return lambdaResponse
