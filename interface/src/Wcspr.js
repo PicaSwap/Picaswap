@@ -24,7 +24,7 @@ import { WCSPRClient } from "./wcspr-client";
 import { utils, helpers} from "casper-js-client-helper";
 
 const NODE_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
-const CHAIN_NAME = 'casper-test-net'
+const CHAIN_NAME = 'casper-test'
 const EVENT_STREAM_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
 
 function format(big) {
@@ -86,7 +86,17 @@ export function Wcspr({ pk }) {
   const [mode, setMode] = useState("wrap")
 
   async function swap(){
-    // TODO
+    if (mode === 'unwrap') {
+       const erc20 = new WCSPRClient(
+        NODE_ADDRESS,
+        CHAIN_NAME,
+        undefined
+      );
+      const contractHash = "hash-80bdcf7eb09c2437783291289b08f7c94adfdc833a9c9b56532fb955c3c71aec"
+      await erc20.setContractHash(contractHash.slice(5));
+      const clPK = CLPublicKey.fromHex(pk);
+      await erc20.withdraw(clPK, amount, 10**9)
+    }
   }
 
   useEffect(()=>{
