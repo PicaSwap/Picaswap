@@ -22,7 +22,7 @@ import {
 
 import { utils, helpers} from "casper-js-client-helper";
 
-const NODE_ADDRESS = "http://picaswap.io/.netlify/functions/cors?url=http://54.183.43.215:7777/rpc"
+const NODE_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://54.183.43.215:7777/rpc"
 
 async function getBalanceOf(publicKey) {
   console.log('getBalanceOf')
