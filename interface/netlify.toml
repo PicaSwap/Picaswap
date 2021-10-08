@@ -1,11 +1,12 @@
 [[redirects]]
+  from = "/cors/*"
+  to = ":splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
   force = false
 
-[[redirects]]
-  from = "/cors-proxy/*"
-  to = ":splat"
-  status = 200
-  force = true
