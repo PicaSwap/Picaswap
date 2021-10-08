@@ -7,13 +7,14 @@ export const handler: Handler = async (event, context) => {
 
   console.log('request', event)
 
-  if (httpMethod == 'OPTIONS') {
+  const responseHeaders = {}
+  responseHeaders['Access-Control-Allow-Origin'] = headers['origin']
+  responseHeaders['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE'
+  responseHeaders['Access-Control-Max-Age'] = '86400'
+  responseHeaders['Access-Control-Allow-Headers'] = '*'
+  responseHeaders['Content-Type'] = 'application/json'
 
-    const responseHeaders = {}
-    responseHeaders['Access-Control-Allow-Origin'] = headers['origin']
-    responseHeaders['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE'
-    responseHeaders['Access-Control-Max-Age'] = '86400'
-    responseHeaders['Access-Control-Allow-Headers'] = '*'
+  if (httpMethod == 'OPTIONS') {
 
     const lambdaResponse = {
       statusCode: 200,
@@ -24,24 +25,26 @@ export const handler: Handler = async (event, context) => {
     return lambdaResponse
   }
 
-  const response = await fetch(url, {
-    method: httpMethod,
-    body: body,
-    headers: headers, 
-  });
+  try {
+    const response = await fetch(url, {
+      method: httpMethod,
+      body: body,
+      headers: headers, 
+    });
 
+    const responseJson = await response.json()
+  catch(err) {
+    return {status: 200, body: JSON.stringify({"error": JSON.stringify(err)}, reponseHeaders)}
+  
+  }
+
+  // TODO: consider adding headers
   //const responseHeaders = response.headers.raw()
-  const responseHeaders = response.headers.raw()
-  responseHeaders['Access-Control-Allow-Origin'] = headers['origin']
-  responseHeaders['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE'
-  responseHeaders['Access-Control-Max-Age'] = '86400'
-  responseHeaders['Access-Control-Allow-Headers'] = '*'
-  responseHeaders['Content-Type'] = 'application/json'
 
   const lambdaResponse = {
     statusCode: response.status,
     headers: responseHeaders,
-    body: JSON.stringify(await response.json()), // assume always json
+    body: JSON.stringify(responseJson), // assume always json
   }
   console.log('response', lambdaResponse)
   return lambdaResponse
