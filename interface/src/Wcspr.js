@@ -23,6 +23,8 @@ import {
 import { WCSPRClient } from "./wcspr-client";
 import { utils, helpers} from "casper-js-client-helper";
 
+const WCSPR_CONTRACT_HASH = 'hash-80bdcf7eb09c2437783291289b08f7c94adfdc833a9c9b56532fb955c3c71aec'
+
 const NODE_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
 const CHAIN_NAME = 'casper-test'
 const EVENT_STREAM_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
@@ -55,7 +57,7 @@ async function getWCSPRBalance(pk) {
     CHAIN_NAME,
     undefined
   );
-  const contractHash = "hash-80bdcf7eb09c2437783291289b08f7c94adfdc833a9c9b56532fb955c3c71aec"
+  const contractHash = WCSPR_CONTRACT_HASH
   await erc20.setContractHash(contractHash.slice(5));
   const clPK = CLPublicKey.fromHex(pk);
   const name = await erc20.name();
@@ -86,14 +88,14 @@ export function Wcspr({ pk }) {
   const [mode, setMode] = useState("wrap")
 
   async function swap(){
+    const contractHash = WCSPR_CONTRACT_HASH.slice(5)
     if (mode === 'unwrap') {
        const erc20 = new WCSPRClient(
         NODE_ADDRESS,
         CHAIN_NAME,
         undefined
       );
-      const contractHash = "hash-80bdcf7eb09c2437783291289b08f7c94adfdc833a9c9b56532fb955c3c71aec"
-      await erc20.setContractHash(contractHash.slice(5));
+      await erc20.setContractHash(contractHash);
       const clPK = CLPublicKey.fromHex(pk);
       await erc20.withdraw(clPK, amount*10**9, 10**9)
     }
@@ -105,7 +107,7 @@ export function Wcspr({ pk }) {
         undefined
       );
       const clPK = CLPublicKey.fromHex(pk);
-      erc20.deposit(clPK, amount*10**9, 10**9)
+      erc20.deposit(clPK, contractHash, amount*10**9, 10**9)
     }
   }
 

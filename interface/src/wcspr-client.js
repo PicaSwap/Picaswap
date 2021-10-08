@@ -1,6 +1,6 @@
 import { ERC20Client } from "casper-erc20-js-client";
 import { constants, helpers, utils } from "casper-js-client-helper";
-import { Signer, RuntimeArgs, CLValueBuilder, CasperClient, DeployUtil } from "casper-js-sdk";
+import { decodeBase16, KeyValue, Signer, RuntimeArgs, CLValueBuilder, CasperClient, DeployUtil } from "casper-js-sdk";
 
 const {
   fromCLMap,
@@ -32,9 +32,10 @@ export class WCSPRClient extends ERC20Client {
     });
   }
 
-  async deposit(publicKey, depositAmount, paymentAmount) {
+  async deposit(publicKey, wcsprContractHash, depositAmount, paymentAmount) {
     const runtimeArgs = RuntimeArgs.fromMap({
       cspr_amount: CLValueBuilder.u256(depositAmount),
+      wcspr_contract_hash_key: CLValueBuilder.key(utils.contractHashToByteArray(decodeBase16(wcsprContractHash)))
     });
 
     const deployHash = await installWasmFile({
