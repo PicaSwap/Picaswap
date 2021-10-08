@@ -20,7 +20,7 @@ import {
   RuntimeArgs,
 } from "casper-js-sdk";
 
-import { ERC20Client } from "casper-erc20-js-client";
+import { WCSPRClient } from "./wcspr-client";
 import { utils, helpers} from "casper-js-client-helper";
 
 const NODE_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
@@ -50,7 +50,7 @@ async function getCSPRBalance(pk) {
 }
 
 async function getWCSPRBalance(pk) {
-  const erc20 = new ERC20Client(
+  const erc20 = new WCSPRClient(
     NODE_ADDRESS,
     CHAIN_NAME,
     undefined
@@ -58,7 +58,9 @@ async function getWCSPRBalance(pk) {
   const contractHash = "hash-80bdcf7eb09c2437783291289b08f7c94adfdc833a9c9b56532fb955c3c71aec"
   await erc20.setContractHash(contractHash.slice(5));
   const clPK = CLPublicKey.fromHex(pk);
-  //const name = await erc20.name();
+  const name = await erc20.name();
+  console.log('name', name)
+
   let balance
   try {
     balance = await erc20.balanceOf(clPK);
