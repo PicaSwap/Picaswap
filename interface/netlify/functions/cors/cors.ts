@@ -5,7 +5,7 @@ export const handler: Handler = async (event, context) => {
   const { url } = event.queryStringParameters
   const { body, httpMethod, headers } = event
 
-  //console.log('request', event)
+  console.log('request', event)
 
   if (httpMethod == 'OPTIONS') {
 
@@ -20,7 +20,7 @@ export const handler: Handler = async (event, context) => {
       headers: responseHeaders,
       body: '',
     }
-    //console.log('response', lambdaResponse)
+    console.log('response', lambdaResponse)
     return lambdaResponse
   }
 
@@ -41,7 +41,7 @@ export const handler: Handler = async (event, context) => {
     headers: responseHeaders,
     body: await response.text(),
   }
-  //console.log('response', lambdaResponse)
+  console.log('response', lambdaResponse)
   return lambdaResponse
 
 }
