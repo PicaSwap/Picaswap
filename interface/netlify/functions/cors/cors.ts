@@ -30,11 +30,13 @@ export const handler: Handler = async (event, context) => {
     headers: headers, 
   });
 
+  //const responseHeaders = response.headers.raw()
   const responseHeaders = response.headers.raw()
   responseHeaders['Access-Control-Allow-Origin'] = headers['origin']
   responseHeaders['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, DELETE'
   responseHeaders['Access-Control-Max-Age'] = '86400'
   responseHeaders['Access-Control-Allow-Headers'] = '*'
+  responseHeaders['Content-Type'] = 'application/json'
 
   const lambdaResponse = {
     statusCode: response.status,
