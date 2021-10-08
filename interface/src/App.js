@@ -45,12 +45,29 @@ export default function App() {
   async function getActivePublicKey() {
     let pk = await Signer.getActivePublicKey().catch(
       (err) => {
-        alert("Please install Signer, make sure the site is connected, there is an active key, and signer is unlocked")
+        //alert("Please install Signer, make sure the site is connected, there is an active key, and signer is unlocked")
         Signer.sendConnectionRequest()
       }
     );
     if (pk) setPk(pk)
   }
+
+  useEffect(()=>{
+    window.addEventListener('signer:locked', msg => {
+      setPk(undefined)
+    }); 
+    window.addEventListener('signer:disconnected', msg => {
+      setPk(undefined)
+    }); 
+    window.addEventListener('signer:connected', async (msg) => {
+      await getActivePublicKey()
+    }); 
+    window.addEventListener('signer:unlocked', async (msg) => {
+      await getActivePublicKey()
+    }); 
+
+
+  }, [])
 
   return (
     <Router>
@@ -78,10 +95,10 @@ export default function App() {
               <Swap/>
             </Route>
             <Route path="/pools">
-              <Pools/>
+              <Pools />
             </Route>
             <Route path="/wcspr">
-              <Wcspr/>
+              <Wcspr pk={pk} />
             </Route>
           </Switch>
 

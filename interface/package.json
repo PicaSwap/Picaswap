@@ -9,6 +9,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/node": "^14.17.21",
+    "casper-erc20-js-client": "^0.0.2",
     "casper-js-client-helper": "0.0.2",
     "casper-js-sdk": "^2.6.0",
     "foundation-sites": "^6.7.3",

@@ -25,7 +25,7 @@ export function Swap() {
            From: 
            <select className="px-4 mx-2 w-36 h-10" onChange={(e)=>{setTokenFrom(e.target.value)}} value={tokenFrom}>
               <option value={undefined}>Select</option>
-              {coins.filter(item => item.contract && item.contract != tokenTo).map(token => <option value={token.contract}>{token.name}</option>)} 
+              {coins.filter(item => item.contract && item.contract != tokenTo).map(token => <option key={token.contract} value={token.contract}>{token.name}</option>)} 
            </select>
           <div className="inline-block">
             <input type="number" placeholder="amount" className="p-2" />
@@ -39,7 +39,7 @@ export function Swap() {
            To: 
            <select className="px-4 mx-2 w-36 h-10" onChange={(e)=>{setTokenTo(e.target.value)}} value={tokenTo}>
               <option value={undefined}>Select</option>
-              {coins.filter(item => item.contract && item.contract != tokenFrom).map(token => <option value={token.contract}>{token.name}</option>)} 
+              {coins.filter(item => item.contract && item.contract != tokenFrom).map(token => <option key={token.contract} value={token.contract}>{token.name}</option>)} 
            </select>
           <div className="inline-block">
             <input type="number" placeholder="amount" className="p-2" />
