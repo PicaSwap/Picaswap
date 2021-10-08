@@ -1,11 +1,17 @@
 [[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
+  from = "/wcspr"
+  to = "/index.html"
   status = 200
   force = false
 
 [[redirects]]
-  from = "/*"
+  from = "/stake"
+  to = "/index.html"
+  status = 200
+  force = false
+
+[[redirects]]
+  from = "/pools"
   to = "/index.html"
   status = 200
   force = false
