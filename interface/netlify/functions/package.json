@@ -1,0 +1,8 @@
+{
+  "name": "functions",
+  "version": "1.0.0",
+  "license": "MIT",
+  "dependencies": {
+    "cors-anywhere": "^0.4.4"
+  }
+}
