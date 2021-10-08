@@ -33,19 +33,20 @@ export const handler: Handler = async (event, context) => {
     });
 
     const responseJson = await response.json()
+
+    // TODO: consider adding headers
+    //const responseHeaders = response.headers.raw()
+
+    const lambdaResponse = {
+      statusCode: response.status,
+      headers: responseHeaders,
+      body: JSON.stringify(responseJson), // assume always json
+    }
+    console.log('response', lambdaResponse)
+    return lambdaResponse
+
   } catch(err) {
     return {status: 200, body: JSON.stringify({"error": JSON.stringify(err)}, reponseHeaders)}
   }
-
-  // TODO: consider adding headers
-  //const responseHeaders = response.headers.raw()
-
-  const lambdaResponse = {
-    statusCode: response.status,
-    headers: responseHeaders,
-    body: JSON.stringify(responseJson), // assume always json
-  }
-  console.log('response', lambdaResponse)
-  return lambdaResponse
 
 }
