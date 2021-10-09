@@ -23,7 +23,7 @@ import {
 import { WCSPRClient } from "./wcspr-client";
 import { utils, helpers} from "casper-js-client-helper";
 
-const WCSPR_CONTRACT_HASH = 'hash-80bdcf7eb09c2437783291289b08f7c94adfdc833a9c9b56532fb955c3c71aec'
+const WCSPR_CONTRACT_HASH = 'hash-d60beb45bdd2002e6e2581467f94196ec9cf4683c25cabe1ffefa4a14d2bb47b'
 
 const NODE_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
 const CHAIN_NAME = 'casper-test'
@@ -78,6 +78,8 @@ export function Wcspr({ pk }) {
 
   console.log('wcspr PK', pk)
 
+  const [message, setMessage] = useState(undefined)
+
   const [isLoadingCSPRBalance, setLoadingCSPRBalance] = useState(false)
   const [isLoadingWCSPRBalance, setLoadingWCSPRBalance] = useState(false)
 
@@ -90,6 +92,8 @@ export function Wcspr({ pk }) {
   const [mode, setMode] = useState("wrap")
 
   async function swap(){
+    setMessage('')
+
     setProcessing(true)
     const contractHash = WCSPR_CONTRACT_HASH.slice(5)
     if (mode === 'unwrap') {
@@ -100,7 +104,8 @@ export function Wcspr({ pk }) {
       );
       await erc20.setContractHash(contractHash);
       const clPK = CLPublicKey.fromHex(pk);
-      await erc20.withdraw(clPK, amount*10**9, 10**9)
+      const deployHash = await erc20.withdraw(clPK, amount*10**9, 10**9)
+      setMessage(`UnWrap hash: ${deployHash}`)
     }
 
     if (mode === 'wrap') {
@@ -110,7 +115,8 @@ export function Wcspr({ pk }) {
         undefined
       );
       const clPK = CLPublicKey.fromHex(pk);
-      erc20.deposit(clPK, contractHash, amount*10**9, 10**9)
+      const deployHash = await erc20.deposit(clPK, contractHash, amount*10**9, 10**9)
+      setMessage(`Wrap hash: ${deployHash}`)
     }
     setProcessing(false)
   }
@@ -167,6 +173,7 @@ export function Wcspr({ pk }) {
               <button className={`ml-2 py-1 px-5 border bg-green-500 text-white capitalize disabled:opacity-50 ${!pk && 'opacity-50'}`} disabled={!pk} onClick={swap}>{mode}</button>
 
               {isProcessing && <div className="mt-2 text text-yellow-400">Processing...</div>}
+              {message && <div className="mt-2 text-xs text-yellow-600">{message}</div>}
 
             </div>
 
