@@ -22,6 +22,7 @@ import {
 
 import { WCSPRClient } from "./wcspr-client";
 import { utils, helpers} from "casper-js-client-helper";
+import { BigNumber } from '@ethersproject/bignumber';
 
 const WCSPR_CONTRACT_HASH = 'hash-d60beb45bdd2002e6e2581467f94196ec9cf4683c25cabe1ffefa4a14d2bb47b'
 
@@ -30,6 +31,7 @@ const CHAIN_NAME = 'casper-test'
 const EVENT_STREAM_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
 
 function format(big) {
+  console.log(big)
   if (big && big.div) {
     return big.div(10**9).toNumber() 
   } else {
@@ -60,8 +62,6 @@ async function getWCSPRBalance(pk) {
   const contractHash = WCSPR_CONTRACT_HASH
   await erc20.setContractHash(contractHash.slice(5));
   const clPK = CLPublicKey.fromHex(pk);
-  const name = await erc20.name();
-  console.log('name', name)
 
   let balance
   try {
@@ -70,7 +70,7 @@ async function getWCSPRBalance(pk) {
     // exception when no tokens in user account
     balance = 0; 
   }
-  return balance
+  return BigNumber.from(balance)
 }
 
 
@@ -105,7 +105,7 @@ export function Wcspr({ pk }) {
       await erc20.setContractHash(contractHash);
       const clPK = CLPublicKey.fromHex(pk);
       const deployHash = await erc20.withdraw(clPK, amount*10**9, 10**9)
-      setMessage(`UnWrap hash: ${deployHash}`)
+      setMessage(`UnWrap is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
     }
 
     if (mode === 'wrap') {
@@ -116,7 +116,7 @@ export function Wcspr({ pk }) {
       );
       const clPK = CLPublicKey.fromHex(pk);
       const deployHash = await erc20.deposit(clPK, contractHash, amount*10**9, 10**9)
-      setMessage(`Wrap hash: ${deployHash}`)
+      setMessage(`Wraping is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
     }
     setProcessing(false)
   }
