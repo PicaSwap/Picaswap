@@ -98,6 +98,7 @@ export function Wcspr({ pk }) {
       await erc20.setContractHash(contractHash);
       const clPK = CLPublicKey.fromHex(pk);
       await erc20.withdraw(clPK, amount*10**9, 10**9)
+      alert('UnWrap is completed, it can take up to 10 minutes to update balance')
     }
 
     if (mode === 'wrap') {
@@ -108,6 +109,7 @@ export function Wcspr({ pk }) {
       );
       const clPK = CLPublicKey.fromHex(pk);
       erc20.deposit(clPK, contractHash, amount*10**9, 10**9)
+      alert('Wrap is completed, it can take up to 10 minutes to update balance')
     }
   }
 
