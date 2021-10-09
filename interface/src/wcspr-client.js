@@ -34,8 +34,8 @@ export class WCSPRClient extends ERC20Client {
 
   async deposit(publicKey, wcsprContractHash, depositAmount, paymentAmount) {
     const runtimeArgs = RuntimeArgs.fromMap({
-      cspr_amount: CLValueBuilder.u256(depositAmount),
-      wcspr_contract_hash_key: CLValueBuilder.key(utils.contractHashToByteArray(decodeBase16(wcsprContractHash)))
+      cspr_amount: CLValueBuilder.u512(depositAmount),
+      wcspr_contract_hash_key: CLValueBuilder.key(CLValueBuilder.byteArray(decodeBase16(wcsprContractHash)))
     });
 
     const deployHash = await installWasmFile({
