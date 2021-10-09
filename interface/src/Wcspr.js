@@ -160,7 +160,7 @@ export function Wcspr({ pk }) {
 
               <input className="p-1" placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
 
-              <button className="ml-2 py-1 px-5 border bg-green-500 text-white capitalize" onClick={swap}>{mode}</button>
+              <button className={`ml-2 py-1 px-5 border bg-green-500 text-white capitalize disabled:opacity-50 ${!pk && 'opacity-50'}`} disabled={!pk} onClick={swap}>{mode}</button>
             </div>
       </div>
     </div>
