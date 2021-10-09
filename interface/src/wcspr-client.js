@@ -19,7 +19,7 @@ export class WCSPRClient extends ERC20Client {
 
   async withdraw(publicKey, withdrawAmount, paymentAmount, ttl = DEFAULT_TTL) {
     const runtimeArgs = RuntimeArgs.fromMap({
-      cspr_amount: CLValueBuilder.u256(withdrawAmount),
+      cspr_amount: CLValueBuilder.u512(withdrawAmount),
     });
 
     return await this.contractCall({
