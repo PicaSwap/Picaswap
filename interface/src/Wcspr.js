@@ -81,6 +81,8 @@ export function Wcspr({ pk }) {
   const [isLoadingCSPRBalance, setLoadingCSPRBalance] = useState(false)
   const [isLoadingWCSPRBalance, setLoadingWCSPRBalance] = useState(false)
 
+  const [isProcessing, setProcessing] = useState(false)
+
   const [wcsprBalance, setWCSPRBalance] = useState(undefined)
   const [csprBalance, setCSPRBalance] = useState(undefined)
 
@@ -88,6 +90,7 @@ export function Wcspr({ pk }) {
   const [mode, setMode] = useState("wrap")
 
   async function swap(){
+    setProcessing(true)
     const contractHash = WCSPR_CONTRACT_HASH.slice(5)
     if (mode === 'unwrap') {
        const erc20 = new WCSPRClient(
@@ -98,7 +101,6 @@ export function Wcspr({ pk }) {
       await erc20.setContractHash(contractHash);
       const clPK = CLPublicKey.fromHex(pk);
       await erc20.withdraw(clPK, amount*10**9, 10**9)
-      alert('UnWrap is completed, it can take up to 10 minutes to update balance')
     }
 
     if (mode === 'wrap') {
@@ -109,8 +111,8 @@ export function Wcspr({ pk }) {
       );
       const clPK = CLPublicKey.fromHex(pk);
       erc20.deposit(clPK, contractHash, amount*10**9, 10**9)
-      alert('Wrap is completed, it can take up to 10 minutes to update balance')
     }
+    setProcessing(false)
   }
 
   useEffect(()=>{
@@ -163,7 +165,11 @@ export function Wcspr({ pk }) {
               <input className="p-1" placeholder="Amount" type="number" value={amount} onChange={(e) => {setAmount(parseFloat(e.target.value))}} style={{width: '200px', margin: "10px auto"}} />
 
               <button className={`ml-2 py-1 px-5 border bg-green-500 text-white capitalize disabled:opacity-50 ${!pk && 'opacity-50'}`} disabled={!pk} onClick={swap}>{mode}</button>
+
+              {isProcessing && <div className="mt-2 text text-yellow-400">Processing...</div>}
+
             </div>
+
       </div>
     </div>
   )
