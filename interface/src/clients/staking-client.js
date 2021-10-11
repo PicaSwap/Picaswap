@@ -23,6 +23,10 @@ export class StakeClient extends ERC20SignerClient {
     return await this.queryContract("reward_rate");
   }
 
+  async getTotalSupply() {
+    return await this.queryContract("total_supply");
+  }
+
   async estimatedRewards(publicKey) {
     // balanceOf(account)*(rewardPerToken()-userRewards[account].userRewardPerTokenPaid)/1e18 + userRewards[account].rewards;
  
@@ -85,6 +89,7 @@ export class StakeClient extends ERC20SignerClient {
     this.contractHash = hash;
     this.contractPackageHash = contractPackageHash;
     this.namedKeys = namedKeys;
+    console.log('namedKeys', namedKeys)
   }
 
 }

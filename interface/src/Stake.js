@@ -91,6 +91,7 @@ export function Stake({ pk }) {
   const [picas, setPicas] = useState(undefined)
 
   const [rewardRate, setRewardRate] = useState(undefined)
+  const [totalSupply, setTotalSupply] = useState(undefined)
 
   const [stakeAmount, setStakeAmount] = useState(undefined)
   const [withdrawAmount, setWithdrawAmount] = useState(undefined)
@@ -135,13 +136,15 @@ export function Stake({ pk }) {
   }
 
   useEffect(()=>{
-    async function initRewardRate() {
+    async function init() {
       const client = await initClient()
       const rewardRate = await client.getRewardRate()
+      const totalSupply = await client.getTotalSupply()
       console.log('reward rate', format(rewardRate))
       setRewardRate(format(rewardRate))
+      setTotalSupply(format(totalSupply))
     }
-    initRewardRate()
+    init()
   }, [])
 
   useEffect(()=>{
@@ -186,7 +189,7 @@ export function Stake({ pk }) {
             <div className="text-center">
               Stake WCSPR and earn PICAS
               <br/>
-              <span className="text-xs">Reward Rate: {rewardRate === undefined ? 'N/A' : rewardRate}</span>
+              <span className="text-xs">Reward Rate: {rewardRate === undefined ? 'N/A' : rewardRate}. Locked WCSPR: {totalSupply === undefined ? 'N/A' : totalSupply}.</span>
             </div>
 
             <div className="mt-6">
