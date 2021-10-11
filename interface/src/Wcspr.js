@@ -49,15 +49,7 @@ async function getWCSPRBalance(pk) {
   const contractHash = WCSPR_CONTRACT_HASH
   await erc20.setContractHash(contractHash.slice(5));
   const clPK = CLPublicKey.fromHex(pk);
-
-  let balance
-  try {
-    balance = await erc20.balanceOf(clPK);
-  } catch (err) {
-    // exception when no tokens in user account
-    balance = 0; 
-  }
-  return BigNumber.from(balance)
+  return await erc20.getBalance(clPK)
 }
 
 

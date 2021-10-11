@@ -3,6 +3,7 @@ import { constants, helpers, utils } from "casper-js-client-helper";
 import { decodeBase16, KeyValue, Signer, RuntimeArgs, CLValueBuilder, CasperClient, DeployUtil } from "casper-js-sdk";
 
 import { installWasmFile, contractCallFn, signDeploy } from './utils'
+import { ERC20SignerClient } from './erc20signer-client'
 
 const {
   fromCLMap,
@@ -17,7 +18,7 @@ const { DEFAULT_TTL } = constants;
 
 const PRE_DEPOSIT_WASM_PATH = './pre_deposit.wasm'
 
-export class WCSPRClient extends ERC20Client {
+export class WCSPRClient extends ERC20SignerClient {
 
   async withdraw(publicKey, withdrawAmount, paymentAmount, ttl = DEFAULT_TTL) {
     const runtimeArgs = RuntimeArgs.fromMap({
@@ -50,34 +51,4 @@ export class WCSPRClient extends ERC20Client {
     });
     return deployHash;
   }
-
-  async contractCall({
-    publicKey,
-    paymentAmount,
-    entryPoint,
-    runtimeArgs,
-    cb,
-    ttl = DEFAULT_TTL,
-    dependencies = []
-  }) {
-    const deployHash = await contractCallFn({
-      chainName: this.chainName,
-      contractHash: this.contractHash,
-      entryPoint,
-      paymentAmount,
-      nodeAddress: this.nodeAddress,
-      publicKey,
-      runtimeArgs,
-      ttl,
-      dependencies
-    });
-
-    if (deployHash !== null) {
-      cb && cb(deployHash);
-      return deployHash;
-    } else {
-      throw Error("Invalid Deploy");
-    }
-  }
-
 }

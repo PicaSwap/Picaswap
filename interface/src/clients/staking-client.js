@@ -3,6 +3,7 @@ import { constants, helpers, utils } from "casper-js-client-helper";
 import { CLAccountHash, CLKey, CLValueParsers, decodeBase16, KeyValue, Signer, RuntimeArgs, CLValueBuilder, CasperClient, DeployUtil } from "casper-js-sdk";
 
 import { installWasmFile, contractCallFn, signDeploy } from './utils'
+import { ERC20SignerClient } from './erc20signer-client'
 
 const {
   fromCLMap,
@@ -16,7 +17,7 @@ const {
 const { DEFAULT_TTL } = constants;
 
 
-export class StakeClient extends ERC20Client {
+export class StakeClient extends ERC20SignerClient {
 
   async estimatedRewards(publicKey) {
     // balanceOf(account)*(rewardPerToken()-userRewards[account].userRewardPerTokenPaid)/1e18 + userRewards[account].rewards;
@@ -78,55 +79,6 @@ export class StakeClient extends ERC20Client {
     this.contractHash = hash;
     this.contractPackageHash = contractPackageHash;
     this.namedKeys = namedKeys;
-  }
-
-  async contractCall({
-    publicKey,
-    paymentAmount,
-    entryPoint,
-    runtimeArgs,
-    cb,
-    ttl = DEFAULT_TTL,
-    dependencies = []
-  }) {
-    const deployHash = await contractCallFn({
-      chainName: this.chainName,
-      contractHash: this.contractHash,
-      entryPoint,
-      paymentAmount,
-      nodeAddress: this.nodeAddress,
-      publicKey,
-      runtimeArgs,
-      ttl,
-      dependencies
-    });
-
-    if (deployHash !== null) {
-      cb && cb(deployHash);
-      return deployHash;
-    } else {
-      throw Error("Invalid Deploy");
-    }
-  }
-
-  async queryContract(key) {
-     return await contractSimpleGetter(
-      this.nodeAddress,
-      this.contractHash,
-      [key]
-    );
-  }
-
-  async queryContractDictionary(publicKey, namedKey) {
-    const key = new CLKey(new CLAccountHash(publicKey.toAccountHash()));
-    const keyBytes = CLValueParsers.toBytes(key).unwrap();
-    const itemKey = Buffer.from(keyBytes).toString("base64");
-    const result = await utils.contractDictionaryGetter(
-      this.nodeAddress,
-      itemKey,
-      this.namedKeys[namedKey]
-    );
-    return result.toString();
   }
 
 }

@@ -18,9 +18,10 @@ import {
   EventStream,
   Keys,
   RuntimeArgs,
+  decodeBase16,
 } from "casper-js-sdk";
 
-import { ERC20Client } from "casper-erc20-js-client";
+import { ERC20SignerClient } from "./clients/erc20signer-client";
 import { WCSPRClient } from "./clients/wcspr-client";
 import { StakeClient } from "./clients/staking-client";
 import { utils, helpers} from "casper-js-client-helper";
@@ -30,8 +31,21 @@ import { PICAS_CONTRACT_HASH, WCSPR_CONTRACT_HASH, STAKE_CONTRACT_HASH, NODE_ADD
 import { format } from './clients/utils'
 
 
+async function approvePicas(clPK, amount) {
+  const erc20 = new ERC20SignerClient(
+    NODE_ADDRESS,
+    CHAIN_NAME,
+    undefined
+  );
+  const contractHash = PICAS_CONTRACT_HASH
+  await erc20.setContractHash(contractHash.slice(5));
+  const contract_hash = WCSPR_CONTRACT_HASH.slice(5);
+  const spender = CLValueBuilder.byteArray(decodeBase16(contract_hash))
+  await erc20.approve(clPK, amount, spender, 10**9)
+}
+
 async function getPicasBalance(pk) {
-  const erc20 = new ERC20Client(
+  const erc20 = new ERC20SignerClient(
     NODE_ADDRESS,
     CHAIN_NAME,
     undefined
@@ -39,15 +53,7 @@ async function getPicasBalance(pk) {
   const contractHash = PICAS_CONTRACT_HASH
   await erc20.setContractHash(contractHash.slice(5));
   const clPK = CLPublicKey.fromHex(pk);
-
-  let balance
-  try {
-    balance = await erc20.balanceOf(clPK);
-  } catch (err) {
-    // exception when no tokens in user account
-    balance = 0; 
-  }
-  return BigNumber.from(balance)
+  return await erc20.getBalance(clPK)
 }
 
 async function getWCSPRBalance(pk) {
@@ -107,9 +113,12 @@ export function Stake({ pk }) {
   async function stake(){
     setMessage('')
     setProcessing(true)
-    // TODO: ask for approval first
-    const client = await initClient()
     const clPK = CLPublicKey.fromHex(pk);
+
+    // ask for approval first
+    await approvePicas(clPK, stakeAmount*10**9, 10**9)
+
+    const client = await initClient()
     const deployHash = await client.stake(clPK, stakeAmount*10**9, 10**9)
     setMessage(`Stake is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
     setProcessing(false)
@@ -129,10 +138,12 @@ export function Stake({ pk }) {
     async function getBalance() {
 
         setLoadingWCSPRBalance(true)
+        setLoadingPicas(true)
+        setLoadingPicas(true)
+
         setWCSPRBalance(await getWCSPRBalance(pk))
         setLoadingWCSPRBalance(false)
 
-        setLoadingPicas(true)
         setPicas(await getPicasBalance(pk))
         setLoadingPicas(false)
 
