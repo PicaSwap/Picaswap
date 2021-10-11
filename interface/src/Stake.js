@@ -129,13 +129,14 @@ export function Stake({ pk }) {
     async function getBalance() {
 
         setLoadingWCSPRBalance(true)
-        setWCSPRBalance(getWCSPRBalance(pk))
+        setWCSPRBalance(await getWCSPRBalance(pk))
         setLoadingWCSPRBalance(false)
 
         setLoadingPicas(true)
-        setPicas(getPicasBalance(pk))
+        setPicas(await getPicasBalance(pk))
         setLoadingPicas(false)
 
+        /*
         const client = await initClient()
 
         setLoadingBalance(true)
@@ -149,6 +150,7 @@ export function Stake({ pk }) {
         setRewards(rewards)
         setLoadingRewards(false)
         console.log('rewards', rewards)
+        */
     }
     if (pk) {
       getBalance()
@@ -156,8 +158,8 @@ export function Stake({ pk }) {
     
   }, [pk])
 
-  const maxDepositText = 'Max: ' + (wcsprBalance === undefined ? "N/A" : balance)
-  const maxWithdrawText = 'Max: ' + (balance === undefined ? "N/A" : balance)
+  const maxDepositText = 'Max: ' + (wcsprBalance === undefined ? "N/A" : format(wcsprBalance))
+  const maxWithdrawText = 'Max: ' + (balance === undefined ? "N/A" : format(balance))
 
   return (
     <div className="text-left">
@@ -168,15 +170,15 @@ export function Stake({ pk }) {
 
             <div className="text-sm mb-8 text-gray-700">
               <div>
-                Staked: {balance === undefined ? 'N/A' : balance} <small>WCSPR</small>
+                Staked: {balance === undefined ? 'N/A' : format(balance)} <small>WCSPR</small>
                 {isLoadingBalance && <span className="text-xs ml-2">loading</span>}
               </div>
               <div>
-                Rewards Pending: {rewards === undefined ?  'N/A' : rewards} <small>PICAS</small>
+                Rewards Pending: {rewards === undefined ?  'N/A' : format(rewards)} <small>PICAS</small>
                 {isLoadingRewards && <span className="text-xs ml-2">loading</span>}
               </div>
               <div>
-                balance: {picas === undefined ?  'N/A' : picas} <small>PICAS</small>
+                balance: {picas === undefined ?  'N/A' : format(picas)} <small>PICAS</small>
                 {isLoadingPicas && <span className="text-xs ml-2">loading</span>}
               </div>
             </div>
