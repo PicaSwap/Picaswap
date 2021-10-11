@@ -4,6 +4,8 @@ Decentralized Exchange and implementation of Automated Market Maker designed on 
 
 DeFi solution to give access to exchanges, liquidity pools and yield farming.
 
+Interface demo: https://www.loom.com/share/4bc32b6be8fa41b88f6003198c9f5c44
+
 ## Implementation
 
 Based on Uniswap V2 protocol
