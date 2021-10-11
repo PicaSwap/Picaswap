@@ -30,6 +30,8 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { PICAS_CONTRACT_HASH, WCSPR_CONTRACT_HASH, STAKE_CONTRACT_HASH, NODE_ADDRESS, CHAIN_NAME } from './constants.js'
 import { format } from './clients/utils'
 
+const SPENDER_CONTRACT_PACKAGE_HASH = "hash-7f1f6f265d055b96e4b2061329bc327fd97883a5be1161cbcec0c7ed6cf28a66"
+
 
 async function approvePicas(clPK, amount) {
   const erc20 = new ERC20SignerClient(
@@ -37,11 +39,12 @@ async function approvePicas(clPK, amount) {
     CHAIN_NAME,
     undefined
   );
-  const contractHash = "hash-05c4704c3ec15d7c1e71f9e12755babd24cbc1d5141a471e2ae19f269c781cbb"
-  await erc20.setContractHash(contractHash.slice(5));
-  const contract_hash = WCSPR_CONTRACT_HASH.slice(5);
-  const spender = CLValueBuilder.byteArray(decodeBase16(contract_hash))
-  await erc20.approve(clPK, amount, spender, 10**9)
+  await erc20.setContractHash(WCSPR_CONTRACT_HASH.slice(5));
+
+  let spenderContractHash = SPENDER_CONTRACT_PACKAGE_HASH
+  spenderContractHash = spenderContractHash.slice(5)
+  const spender = CLValueBuilder.byteArray(decodeBase16(spenderContractHash))
+  return await erc20.approve(clPK, amount, spender, 10**9)
 }
 
 async function getPicasBalance(pk) {
@@ -87,6 +90,8 @@ export function Stake({ pk }) {
   const [rewards, setRewards] = useState(undefined)
   const [picas, setPicas] = useState(undefined)
 
+  const [rewardRate, setRewardRate] = useState(undefined)
+
   const [stakeAmount, setStakeAmount] = useState(undefined)
   const [withdrawAmount, setWithdrawAmount] = useState(undefined)
 
@@ -98,7 +103,6 @@ export function Stake({ pk }) {
       undefined
     );
     await stakeClient.setContractHash(contractHash);
-    const clPK = CLPublicKey.fromHex(pk);
     return stakeClient
   }
 
@@ -108,11 +112,15 @@ export function Stake({ pk }) {
     const clPK = CLPublicKey.fromHex(pk);
 
     // ask for approval first
-    await approvePicas(clPK, stakeAmount*10**9, 10**9)
+    const deployHashApproval = await approvePicas(clPK, stakeAmount*10**9, 10**9)
+    let msg = `Approved. Hash: ${deployHashApproval}. `
+    setMessage(msg)
 
     const client = await initClient()
     const deployHash = await client.stake(clPK, stakeAmount*10**9, 10**9)
     setMessage(`Stake is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
+    msg = `Approved. Hash: ${deployHashApproval}. Staked. Hash: ${deployHash}. Balance will be updated within 10min.`
+    setMessage(msg)
     setProcessing(false)
   }
 
@@ -121,14 +129,24 @@ export function Stake({ pk }) {
     setProcessing(true)
     const client = await initClient()
     const clPK = CLPublicKey.fromHex(pk);
-    const deployHash = await client.withdraw(clPK, stakeAmount*10**9, 10**9)
+    const deployHash = await client.withdraw(clPK, withdrawAmount*10**9, 10**9)
     setMessage(`Withdraw is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
     setProcessing(false)
   }
 
   useEffect(()=>{
-    async function getBalance() {
+    async function initRewardRate() {
+      const client = await initClient()
+      const rewardRate = await client.getRewardRate()
+      console.log('reward rate', format(rewardRate))
+      setRewardRate(format(rewardRate))
+    }
+    initRewardRate()
+  }, [])
 
+  useEffect(()=>{
+
+    async function getBalance() {
         setLoadingWCSPRBalance(true)
         setLoadingPicas(true)
         setLoadingPicas(true)
@@ -152,11 +170,11 @@ export function Stake({ pk }) {
         setRewards(rewards)
         setLoadingRewards(false)
         console.log('rewards', rewards)
+
     }
     if (pk) {
       getBalance()
     }
-    
   }, [pk])
 
   const maxDepositText = 'Max: ' + (wcsprBalance === undefined ? "N/A" : format(wcsprBalance))
@@ -165,7 +183,11 @@ export function Stake({ pk }) {
   return (
     <div className="text-left">
       <div>
-            <div className="text-center">Stake WCSPR and earn PICAS</div>
+            <div className="text-center">
+              Stake WCSPR and earn PICAS
+              <br/>
+              <span className="text-xs">Reward Rate: {rewardRate === undefined ? 'N/A' : rewardRate}</span>
+            </div>
 
             <div className="mt-6">
 

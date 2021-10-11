@@ -19,17 +19,25 @@ const { DEFAULT_TTL } = constants;
 
 export class StakeClient extends ERC20SignerClient {
 
+  async getRewardRate() {
+    return await this.queryContract("reward_rate");
+  }
+
   async estimatedRewards(publicKey) {
     // balanceOf(account)*(rewardPerToken()-userRewards[account].userRewardPerTokenPaid)/1e18 + userRewards[account].rewards;
  
-    const balance = await parseInt(this.getBalance(publicKey));
+    const balance = await this.getBalance(publicKey);
     if (!balance) {
       return 0
+      console.log('no staked balance')
     }
 
     const rewardPerToken = await this.queryContract("reward_per_token_stored");
+    console.log('rewardPerToken', rewardPerToken)
     const rewardPerTokenPaid = await this.queryContractDictionary(publicKey, "user_reward_per_token_paid")
+    console.log('rewardPerTokenPaid', rewardPerTokenPaid)
     const userRewards = await this.queryContractDictionary(publicKey, "rewards")
+    console.log('userRewards', 'userRewards')
 
     return userRewards + balance * (rewardPerToken-rewardPerTokenPaid)/10**9
   }
