@@ -22,13 +22,11 @@ export class StakeClient extends ERC20SignerClient {
   async estimatedRewards(publicKey) {
     // balanceOf(account)*(rewardPerToken()-userRewards[account].userRewardPerTokenPaid)/1e18 + userRewards[account].rewards;
  
-    let balance
-    try {
-      balance = await parseInt(this.balanceOf(publicKey));
-    } catch (err) {
-      // exception when no tokens in user account
+    const balance = await parseInt(this.getBalance(publicKey));
+    if (!balance) {
       return 0
     }
+
     const rewardPerToken = await this.queryContract("reward_per_token_stored");
     const rewardPerTokenPaid = await this.queryContractDictionary(publicKey, "user_reward_per_token_paid")
     const userRewards = await this.queryContractDictionary(publicKey, "rewards")

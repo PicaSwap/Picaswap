@@ -37,7 +37,7 @@ async function approvePicas(clPK, amount) {
     CHAIN_NAME,
     undefined
   );
-  const contractHash = PICAS_CONTRACT_HASH
+  const contractHash = "hash-05c4704c3ec15d7c1e71f9e12755babd24cbc1d5141a471e2ae19f269c781cbb"
   await erc20.setContractHash(contractHash.slice(5));
   const contract_hash = WCSPR_CONTRACT_HASH.slice(5);
   const spender = CLValueBuilder.byteArray(decodeBase16(contract_hash))
@@ -65,15 +65,7 @@ async function getWCSPRBalance(pk) {
   const contractHash = WCSPR_CONTRACT_HASH
   await erc20.setContractHash(contractHash.slice(5));
   const clPK = CLPublicKey.fromHex(pk);
-
-  let balance
-  try {
-    balance = await erc20.balanceOf(clPK);
-  } catch (err) {
-    // exception when no tokens in user account
-    balance = 0; 
-  }
-  return BigNumber.from(balance)
+  return await erc20.getBalance(clPK);
 }
 
 
@@ -147,11 +139,10 @@ export function Stake({ pk }) {
         setPicas(await getPicasBalance(pk))
         setLoadingPicas(false)
 
-        /*
         const client = await initClient()
 
         setLoadingBalance(true)
-        const balance = await client.balanceOf(CLPublicKey.fromHex(pk))
+        const balance = await client.getBalance(CLPublicKey.fromHex(pk))
         setBalance(balance)
         setLoadingBalance(false)
         console.log('balance', balance)
@@ -161,7 +152,6 @@ export function Stake({ pk }) {
         setRewards(rewards)
         setLoadingRewards(false)
         console.log('rewards', rewards)
-        */
     }
     if (pk) {
       getBalance()

@@ -1,4 +1,4 @@
-import { ERC20Client, ERC20Events } from "casper-erc20-js-client";
+import { ERC20Client, constants as erc20constants } from "casper-erc20-js-client";
 import { constants, utils, helpers } from "casper-js-client-helper";
 import { CLAccountHash, CLKey, CLValueParsers, decodeBase16, KeyValue, Signer, RuntimeArgs, CLValueBuilder, CasperClient, DeployUtil } from "casper-js-sdk";
 import { BigNumber } from '@ethersproject/bignumber';
@@ -6,6 +6,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { contractCallFn, signDeploy } from './utils'
 
 const { DEFAULT_TTL } = constants;
+const { ERC20Events } = erc20constants;
 const { createRecipientAddress, contractSimpleGetter } = helpers;
 
 export class ERC20SignerClient extends ERC20Client {
@@ -13,7 +14,8 @@ export class ERC20SignerClient extends ERC20Client {
   async getBalance(publicKey) {
     let balance
     try {
-      balance = await parseInt(this.balanceOf(publicKey));
+      balance = await this.balanceOf(publicKey);
+      balance = parseInt(balance)
     } catch (err) {
       // exception when no tokens in user account
       return 0
