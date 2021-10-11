@@ -16,6 +16,7 @@ import {
 } from "casper-js-sdk";
 
 
+import { Stake } from './Stake.js'
 import { Wcspr } from './Wcspr.js'
 import { Swap } from './Swap.js'
 
@@ -97,6 +98,9 @@ export default function App() {
             <Route path="/pools">
               <Pools />
             </Route>
+            <Route path="/stake">
+              <Stake pk={pk} />
+            </Route>
             <Route path="/wcspr">
               <Wcspr pk={pk} />
             </Route>
@@ -115,15 +119,6 @@ function Pools() {
   return (
     <div className="text-center">
       <h2>Pools</h2>
-    </div>
-  )
-
-}
-
-function Stake() {
-  return (
-    <div className="text-center">
-      <h2>Stake</h2>
     </div>
   )
 

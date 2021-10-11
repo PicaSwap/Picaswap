@@ -20,24 +20,11 @@ import {
   RuntimeArgs,
 } from "casper-js-sdk";
 
-import { WCSPRClient } from "./wcspr-client";
+import { WCSPRClient } from "./clients/wcspr-client";
 import { utils, helpers} from "casper-js-client-helper";
 import { BigNumber } from '@ethersproject/bignumber';
-
-const WCSPR_CONTRACT_HASH = 'hash-d60beb45bdd2002e6e2581467f94196ec9cf4683c25cabe1ffefa4a14d2bb47b'
-
-const NODE_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
-const CHAIN_NAME = 'casper-test'
-const EVENT_STREAM_ADDRESS = "https://picaswap.io/.netlify/functions/cors?url=http://159.65.118.250:7777/rpc";
-
-function format(big) {
-  console.log(big)
-  if (big && big.div) {
-    return big.div(10**9).toNumber() 
-  } else {
-    return big
-  }
-}
+import { format } from './clients/utils'
+import { WCSPR_CONTRACT_HASH, NODE_ADDRESS, CHAIN_NAME } from './constants.js'
 
 
 async function getCSPRBalance(pk) {
