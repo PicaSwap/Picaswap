@@ -24,7 +24,7 @@ import { WCSPRClient } from "./clients/wcspr-client";
 import { utils, helpers} from "casper-js-client-helper";
 import { BigNumber } from '@ethersproject/bignumber';
 import { format } from './clients/utils'
-import { WCSPR_CONTRACT_HASH, NODE_ADDRESS, CHAIN_NAME } from './constants.js'
+import { WCSPR_CONTRACT_HASH, NODE_ADDRESS, CHAIN_NAME, CASPER_FEE } from './constants.js'
 
 
 async function getCSPRBalance(pk) {
@@ -83,7 +83,7 @@ export function Wcspr({ pk }) {
       );
       await erc20.setContractHash(contractHash);
       const clPK = CLPublicKey.fromHex(pk);
-      const deployHash = await erc20.withdraw(clPK, amount*10**9, 10**9)
+      const deployHash = await erc20.withdraw(clPK, amount*10**9, CASPER_FEE)
       setMessage(`UnWrap is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
     }
 
@@ -94,7 +94,7 @@ export function Wcspr({ pk }) {
         undefined
       );
       const clPK = CLPublicKey.fromHex(pk);
-      const deployHash = await erc20.deposit(clPK, contractHash, amount*10**9, 10**9)
+      const deployHash = await erc20.deposit(clPK, contractHash, amount*10**9, CASPER_FEE)
       setMessage(`Wraping is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
     }
     setProcessing(false)

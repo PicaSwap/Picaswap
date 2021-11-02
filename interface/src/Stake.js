@@ -27,7 +27,7 @@ import { StakeClient } from "./clients/staking-client";
 import { utils, helpers} from "casper-js-client-helper";
 import { BigNumber } from '@ethersproject/bignumber';
 
-import { PICAS_CONTRACT_HASH, WCSPR_CONTRACT_HASH, STAKE_CONTRACT_HASH, NODE_ADDRESS, CHAIN_NAME } from './constants.js'
+import { CASPER_FEE, PICAS_CONTRACT_HASH, WCSPR_CONTRACT_HASH, STAKE_CONTRACT_HASH, NODE_ADDRESS, CHAIN_NAME } from './constants.js'
 import { format } from './clients/utils'
 
 const SPENDER_CONTRACT_PACKAGE_HASH = "hash-7f1f6f265d055b96e4b2061329bc327fd97883a5be1161cbcec0c7ed6cf28a66"
@@ -44,7 +44,7 @@ async function approvePicas(clPK, amount) {
   let spenderContractHash = SPENDER_CONTRACT_PACKAGE_HASH
   spenderContractHash = spenderContractHash.slice(5)
   const spender = CLValueBuilder.byteArray(decodeBase16(spenderContractHash))
-  return await erc20.approve(clPK, amount, spender, 10**9)
+  return await erc20.approve(clPK, amount, spender, CASPER_FEE)
 }
 
 async function getPicasBalance(pk) {
@@ -113,12 +113,12 @@ export function Stake({ pk }) {
     const clPK = CLPublicKey.fromHex(pk);
 
     // ask for approval first
-    const deployHashApproval = await approvePicas(clPK, stakeAmount*10**9, 10**9)
+    const deployHashApproval = await approvePicas(clPK, stakeAmount*10**9, CASPER_FEE)
     let msg = `Approved. Hash: ${deployHashApproval}. `
     setMessage(msg)
 
     const client = await initClient()
-    const deployHash = await client.stake(clPK, stakeAmount*10**9, 10**9)
+    const deployHash = await client.stake(clPK, stakeAmount*10**9, CASPER_FEE)
     setMessage(`Stake is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
     msg = `Approved. Hash: ${deployHashApproval}. Staked. Hash: ${deployHash}. Balance will be updated within 10min.`
     setMessage(msg)
@@ -130,7 +130,7 @@ export function Stake({ pk }) {
     setProcessing(true)
     const client = await initClient()
     const clPK = CLPublicKey.fromHex(pk);
-    const deployHash = await client.withdraw(clPK, withdrawAmount*10**9, 10**9)
+    const deployHash = await client.withdraw(clPK, withdrawAmount*10**9, CASPER_FEE)
     setMessage(`Withdraw is completed. Balance will be updated within 10min. Transaction hash: ${deployHash}`)
     setProcessing(false)
   }
